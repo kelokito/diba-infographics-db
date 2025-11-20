@@ -6,20 +6,17 @@ class BibliographicsRepository:
     def insert_records(records):
         conn = get_connection()
         cur = conn.cursor()
-        sql = """INSERT INTO bibliographics_info (id, title, author, year)
-                 VALUES (%s, %s, %s, %s)
-                 ON CONFLICT (id) DO NOTHING;"""
+
+        sql = """
+            INSERT INTO bibliographics (
+                id, call, cdu, year_edition, mat_type, lang
+            )
+            VALUES (%s, %s, %s, %s, %s, %s)
+            ON CONFLICT (id) DO NOTHING;
+        """
+
         for r in records:
-            cur.execute(sql, (r.id, r.title, r.author, r.year))
+            cur.execute(sql, (r.id, r.call, r.cdu, r.year_edition, r.mat_type, r.lang))
 
         conn.commit()
         conn.close()
-
-    @staticmethod
-    def get_all():
-        conn = get_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM bibliographics_info")
-        data = cur.fetchall()
-        conn.close()
-        return data
